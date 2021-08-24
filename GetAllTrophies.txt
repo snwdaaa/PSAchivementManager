@@ -1,0 +1,51 @@
+GetAllTrophies(self, npServiceName, npCommunicationId, trophyGroupId):
+
+npServiceName : ps3-ps4-ps vita와 ps5를 구분
+npCommunicationId : 게임 코드
+trophyGroupId : 트로피 그룹 종류
+
+예) 용과같이5 ps4버전 모든 트로피 가져오기
+GetAllTrophies('trophy', 'NPWR15942_00', 'all')
+
+trophySetVersion(string) : 현재 트로피 셋 버전
+hasTrophyGroups(Boolean) : 이 타이틀이 추가적인 트로피 그룹이 있으면 True
+trophies(JSON object) : 각 트로피 별 정보
+totalItemCount(num) : 해당 그룹 내 전체 트로피 수 (그룹이 'all'이면 전체 그룹 트로피 수)
+
+trophies JSON object 속성
+trophyID(num, 최소 0) : 트로피 unique ID
+trophyHidden(bool) : 비밀 트로피(얻기 전까지)면 True 반환
+trophyType(string) : 트로피의 타입. 'bronze', 'silver', 'gold', 'platinum'
+trophyName(string) : 트로피 이름
+trophyDetail(string) : 트로피 설명
+trophyIconUrl(string) : 트로피 사진
+trophyGroupId(string) : 트로피 그룹 아이디. 본편 하나만 있는 경우에는 'default', 아니면 '001' 002'... 등의 숫자
+여기부터는 PS5만 지원. 이건 나중에 추가하자. https://andshrew.github.io/PlayStation-Trophies/#/APIv2?id=_2-retrieve-the-trophies-for-a-title 참고
+trophyProgressTargetValue(string) : 
+trophyRewardName(string) :
+trophyRewardImageUrl(string) :
+
+{
+    'trophySetVersion': '01.00', 
+    'hasTrophyGroups': False, 
+    'trophies': 
+    [
+        {
+            'trophyId': 0, 
+            'trophyHidden': False, 
+            'trophyType': 'platinum', 
+            'trophyName': '夢、叶えし者', 
+            'trophyDetail': 'トロフィーを全て揃えた', 
+            'trophyIconUrl': 'https://image.api.playstation.com/trophy/np/NPWR15942_00_008AC89A50392DACD43ABF1713159A82C476177C4E/A445D59E52F066F5C96C5BE5EED03B0B49A4354A.PNG', 
+            'trophyGroupId': 'default'
+        },
+
+        {
+            'trophyId': 1, 
+            'trophyHidden': True, 
+            'trophyType': 'bronze', 
+            'trophyName': 'ようこそ永洲街へ', 
+            'trophyDetail': '永洲街に初めて訪れた', 
+            'trophyIconUrl': 'https://image.api.playstation.com/trophy/np/NPWR15942_00_008AC89A50392DACD43ABF1713159A82C476177C4E/CE388EC59200E5E61B701731FED9DC0B8199AF3E.PNG', 
+            'trophyGroupId': 'default'
+        },

@@ -1,0 +1,77 @@
+주의할 점은 GetEarnedTrophies 함수는 얻은 트로피의 이름, 설명을 포함하지 않는다.
+트로피의 이름과 설명을 포함하는 리스트는 GetAllTrophies로만 얻을 수 있다.
+그렇기 때문에 GetAllTrohpies에서 얻은 전체 트로피 목록에서 GetEarnedTrophies에서 얻은 트로피 목록에서 'earned'가 True인 
+트로피의 trophyID를 이용해 전체 트로피 목록에서 이미 달성한 트로피들을 뽑아줘야한다.
+
+예) 용과같이6 ps4버전 트로피 달성 정보 가져오기
+GetEarnedTrophies('trophy', 'NPWR09911_00', 'all')
+
+trophySetVersion(string) : 현재 트로피 셋 버전
+hasTrophyGroups(Boolean) : 이 타이틀이 추가적인 트로피 그룹이 있으면 True
+lastUpdatedDataTime(UTC Date) : 이 타이틀에서 트로피를 마지막으로 얻은 시간
+trophies(JSON object) : 각 트로피 별 정보
+rarestTrophies(JSON object) : 'earned'가 True인 트로피 중에서 'trophyEarnedRate'가 가장 낮은 트로피 하나를 반환한다.
+얻은 트로피가 하나도 없으면 아무 것도 반환하지 않는다.
+totalItemCount(num) : 해당 그룹 내 전체 트로피 수 (그룹이 'all'이면 전체 그룹 트로피 수)
+
+trophies JSON object 속성
+trophyId(num, 최소 0) : 트로피 unique ID (그룹 영향 X)
+trophyHidden(bool) : 비밀 트로피(얻기 전까지)면 True 반환
+earned(bool) : 획득했다면 True 반환
+earnedDateTime(UTC Date) : 트로피 획득한 시각 반환. 'earned'가 true 일때만 리턴함
+trophyType(string) : 트로피의 타입. 'bronze', 'silver', 'gold', 'platinum'
+trophyRare(num) : 트로피의 희귀도. 0(Ultra Rare), 1(Very Rare), 2(Rare), 3(Common)
+trophyEarnedRate(string) : 전체 플레이어 중 해당 트로피를 얻은 사람의 퍼센트
+여기부터는 PS5만 지원. 이건 나중에 추가하자. https://andshrew.github.io/PlayStation-Trophies/#/APIv2?id=_2-retrieve-the-trophies-for-a-title 참고
+progress(string) : 
+progressRate(num) : 
+progressedDateTime(UTC Date) : 
+
+rarestTrophies JSON object 속성
+trophyId(num, 최소 0) : 트로피 unique ID (그룹 영향 X)
+trophyHidden(bool) : 비밀 트로피(얻기 전까지)면 True 반환
+earned(bool) : 획득했다면 True 반환
+earnedDateTime(UTC Date) : 트로피 획득한 시각 반환. 'earned'가 true 일때만 리턴함
+trophyType(string) : 트로피의 타입. 'bronze', 'silver', 'gold', 'platinum'
+trophyRare(num) : 트로피의 희귀도. 0(Ultra Rare), 1(Very Rare), 2(Rare), 3(Common)
+trophyEarnedRate(string) : 전체 플레이어 중 해당 트로피를 얻은 사람의 퍼센트
+
+{
+    'trophySetVersion': '01.00', 
+    'hasTrophyGroups': False, 
+    'lastUpdatedDateTime': '2021-08-23T12:01:32Z', 
+    'trophies': [
+        {
+            'trophyId': 0, 
+            'trophyHidden': False, 
+            'earned': False, 
+            'trophyType': 'platinum', 
+            'trophyRare': 0, 
+            'trophyEarnedRate': '4.0'
+        }, 
+        
+        {
+            'trophyId': 1, 
+            'trophyHidden': True, 
+            'earned': True, 
+            'earnedDateTime': '2021-08-23T10:20:38Z', 
+            'trophyType': 'bronze', 
+            'trophyRare': 3, 
+            'trophyEarnedRate': '95.9'
+        }
+    ],
+
+    'rarestTrophies': [
+        {
+            'trophyId': 56, 
+            'trophyHidden': False, 
+            'earned': True, 
+            'earnedDateTime': '2021-08-23T10:51:41Z', 
+            'trophyType': 'bronze', 
+            'trophyRare': 3, 
+            'trophyEarnedRate': '81.2'
+        }
+    ], 
+   
+    'totalItemCount': 59
+}

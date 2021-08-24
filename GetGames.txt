@@ -1,0 +1,67 @@
+GetGames 함수가 가져오는 정보
+JSON 형식으로 반환
+
+npServiceName(string) : trophy는 PS3, PS4, PS Vita. trophy2는 PS5
+npCommunicationId(string) : 타이틀 Unique ID. 나중에 특정 게임 트로피 불러올 때 필요
+trophySetVersion(string) : 현재 트로피 버전
+trophyTitleName(string) : 게임 이름
+trophyTitleDetail(string) : 게임 상세 설명 (PS3, PS4, PS Vita만 동작)
+trophyTitleIconUrl(string) : 게임 타이틀 사진 URL
+trophyTitlePlatform(string) : 해당 게임이 플레이 된 기기. 다중 플랫폼을 지원하는 게임은 콤마로 구분되어 나타남(ex: 'ps4','ps5')
+hasTrophyGroups(bool) : 트로피 그룹(본편, DLC 같은거)이 있으면 True 반환. 아니면 False
+definedTrophies(JSON object) : 전체 트로피
+progress(num) : 해당 타이틀 트로피 완료 퍼센트
+earnedTrophies(JSON object) : 플레이어가 완료한 트로피
+hiddenFlag(bool) : 계정 트로피 리스트에서 숨김처리 되어있으면 True 반환. 인증 계정 전용. 정보 비공개 되어있으면 Title이 return 안 됨
+lastUpdatedDataTime(UTC Date) : 마지막으로 트로피를 획득한 시간
+
+JSON object
+definedTrophies
+	bronze(num) : 전체 브론즈 트로피 개수
+	silver(num) : 전체 실버 트로피 개수
+	gold(num) : 전체 골드 트로피 개수
+	platinum(num) : 전체 플래티넘 트로피 개수
+earnedTrophies
+	bronze(num) : 획득한 브론즈 트로피 개수
+	silver(num) : 획득한 실버 트로피 개수
+	gold(num) : 획득한 골드 트로피 개수
+	platinum(num) : 획득한 플래티넘 트로피 개수
+
+실제 예시
+{
+	'trophyTitles': 
+	[
+		{
+			'npServiceName': 'trophy', 
+			'npCommunicationId': 'NPWR09911_00', 
+			'trophySetVersion': '01.00', 
+			'trophyTitleName': '龍が如く６\u3000命の詩。', 
+			'trophyTitleDetail': '龍が如く６のトロフィーセット', 
+			'trophyTitleIconUrl': 'https://image.api.playstation.com/trophy/np/NPWR09911_00_00D5B23142C4FC82BF45A8174C976838D045552C9F/E68D8BE39D52C51F6AFF24E1C2F04836C6F31F75.PNG', 
+			'trophyTitlePlatform': 'PS4', 
+			'hasTrophyGroups': False, 
+			'definedTrophies': {'bronze': 50, 'silver': 7, 'gold': 1, 'platinum': 1}, 
+			'progress': 5, 
+			'earnedTrophies': {'bronze': 4, 'silver': 0, 'gold': 0, 'platinum': 0}, 
+			'hiddenFlag': False, 
+			'lastUpdatedDateTime': '2021-08-23T12:01:32Z'
+		}, 
+
+		{
+			'npServiceName': 'trophy', 
+			'npCommunicationId': 'NPWR15942_00', 
+			'trophySetVersion': '01.00', 
+			'trophyTitleName': '龍が如く５\u3000夢、叶えし者', 
+			'trophyTitleDetail': '龍が如く５\u3000 夢、叶えし者のトロフィーセット', 
+			'trophyTitleIconUrl': 'https://image.api.playstation.com/trophy/np/NPWR15942_00_008AC89A50392DACD43ABF1713159A82C476177C4E/7F96BDE1BACB3BB41B8D2F02BD3E8A6FEDB41822.PNG', 
+			'trophyTitlePlatform': 'PS4', 
+			'hasTrophyGroups': False, 
+			'definedTrophies': {'bronze': 50, 'silver': 4, 'gold': 2, 'platinum': 1}, 
+			'progress': 60, 
+			'earnedTrophies': {'bronze': 38, 'silver': 2, 'gold': 0, 'platinum': 0}, 
+			'hiddenFlag': False, 'lastUpdatedDateTime': '2021-08-23T07:18:42Z'
+		}, 
+	],
+
+	'totalItemCount" : ~~
+}
