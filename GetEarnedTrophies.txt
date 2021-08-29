@@ -1,4 +1,4 @@
-주의할 점은 GetEarnedTrophies 함수는 얻은 트로피의 이름, 설명을 포함하지 않는다.
+`주의할 점은 GetEarnedTrophies 함수는 얻은 트로피의 이름, 설명을 포함하지 않는다.
 트로피의 이름과 설명을 포함하는 리스트는 GetAllTrophies로만 얻을 수 있다.
 그렇기 때문에 GetAllTrohpies에서 얻은 전체 트로피 목록에서 GetEarnedTrophies에서 얻은 트로피 목록에서 'earned'가 True인 
 트로피의 trophyID를 이용해 전체 트로피 목록에서 이미 달성한 트로피들을 뽑아줘야한다.

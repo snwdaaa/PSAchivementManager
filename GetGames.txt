@@ -29,9 +29,9 @@ earnedTrophies
 
 실제 예시
 {
-	'trophyTitles': 
-	[
-		{
+	'trophyTitles': Key
+	[ Value(List)
+		{ (리스트 요소 1이자 딕셔너리)
 			'npServiceName': 'trophy', 
 			'npCommunicationId': 'NPWR09911_00', 
 			'trophySetVersion': '01.00', 
@@ -47,7 +47,7 @@ earnedTrophies
 			'lastUpdatedDateTime': '2021-08-23T12:01:32Z'
 		}, 
 
-		{
+		{ (리스트 요소 2이자 딕셔너리)
 			'npServiceName': 'trophy', 
 			'npCommunicationId': 'NPWR15942_00', 
 			'trophySetVersion': '01.00', 
