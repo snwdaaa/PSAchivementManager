@@ -6,17 +6,17 @@ import login
 # 유저 인스턴스 선언
 userInfoInstance = userInfo.UserInfo(login.onlineID, login.npssoCode).GetPlayerInstance()
 
+# 전체 게임 정보가 담겨있는 딕셔너리
+entireGameList = userInfoInstance.GetPlayerGames()
+
+# 게임의 총 개수
+totalTitleCount = entireGameList['totalItemCount']
+
 # 플레이어가 소유한 게임의 정보를 가져온다
 # 정보 : 게임 이름, 게임 아이콘, 플레이한 플랫폼, npCommunicationID, 전체 트로피 수, 얻은 트로피 수, 진행도(퍼센트)
 # JSON Object에서 trophyTitleName, trophyTitleIconUrl, trophyTitlePlatform 가져오기
 def GetOwnedGameList():
-    # 전체 정보가 담겨있는 딕셔너리
-    entireGameList = userInfoInstance.GetPlayerGames()
-
     # trophyTitleName, trophyTitleIconUrl, trophyTitlePlatform만 따로 뽑아서 새로운 딕셔너리 만들기
-
-    # 게임의 총 개수
-    totalTitleCount = entireGameList['totalItemCount']
 
     # entireGameList를 바탕으로, 정리한 자료들을 담을 딕셔너리
     titleInfo = {
