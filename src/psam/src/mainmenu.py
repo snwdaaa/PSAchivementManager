@@ -24,13 +24,7 @@ root.resizable(True, True)
 programMenu = Menu(root)
 
 # 프로그램 메뉴 ------------------------------
-
-# 트로피 정보 다시 불러오기
-def Refresh():
-    pass
-
 menu_program = Menu(programMenu, tearoff=0)
-menu_program.add_command(label="다시 불러오기", command=Refresh)
 menu_program.add_command(label="종료", command=root.quit)
 
 programMenu.add_cascade(label="프로그램", menu=menu_program)
@@ -57,25 +51,37 @@ playerInfoFrame = LabelFrame(root, text="플레이어 정보")
 playerInfoFrame.pack(side="top")
 
 # 프로필 사진------------------------------
-profilePictureURL = request.urlopen(getUserInfos.GetUserProfileImageURL())
-raw_data = profilePictureURL.read()
-profilePictureURL.close()
+def ShowProfilePicture():
+    profilePictureURL = request.urlopen(getUserInfos.GetUserProfileImageURL())
+    raw_data = profilePictureURL.read()
+    profilePictureURL.close()
 
-profimePictureImage = Image.open(BytesIO(raw_data))
-photo = ImageTk.PhotoImage(profimePictureImage)
+    profilePictureImage = Image.open(BytesIO(raw_data))
+    photo = ImageTk.PhotoImage(profilePictureImage)
 
-profilePictureLabel = Label(playerInfoFrame, image=photo)
-profilePictureLabel.grid(row=0, column=0)
+    profilePictureLabel = Label(playerInfoFrame, image=photo)
+    profilePictureLabel.image = photo
+    profilePictureLabel.pack()
 
 # 프로필 이름------------------------------
-profileName = getUserInfos.GetUserProfileName()
+def ShowProfileName():
+    profileName = getUserInfos.GetUserProfileName()
 
-profileNameLabel = Label(playerInfoFrame, text=profileName)
-profileNameLabel.grid(row=0, column=1)
+    profileNameLabel = Label(playerInfoFrame, text=profileName)
+    profileNameLabel.pack()
 
 # 트로피 현황
 
 # 트로피 레벨 (나중에 추가)
+
+# 프로필 초기화
+def InitProfile():
+    ShowProfilePicture()
+    ShowProfileName()
+    # 트로피 현황
+    # 트로피 레벨
+
+InitProfile()
 
 ownedGameList = modifyGameList.GetOwnedGameList()
 
@@ -107,7 +113,8 @@ gameSelectionScrollBar.config(command=gameNameList.yview)
 gameInfoFrame = LabelFrame(root, text="게임")
 gameInfoFrame.pack()
 
-def ShowGameImage(index):
+# 초기화 함수
+def InitGameImage(index):
     # 선택한 게임의 사진 표시
     gameImageURL = request.urlopen(ownedGameList['titleIcon'][index])
     raw_data = gameImageURL.read()
@@ -117,10 +124,12 @@ def ShowGameImage(index):
     photo = ImageTk.PhotoImage(gameImage)
 
     gameInfoImage = Label(gameInfoFrame, image=photo)
+    gameInfoImage.image = photo
     gameInfoImage.grid(row=0, column=0)
 
-# 게임 이름 갱신할 이전에 있던 패널과 겹치는 문제 발생
-def ShowGameName(index):
+    return gameInfoImage
+
+def InitGameName(index):
     # 선택한 게임의 이름 표시
     gameTitleName = ownedGameList['titleName'][index]
 
@@ -128,8 +137,9 @@ def ShowGameName(index):
     gameInfoName.grid(row=0, column=1)
 
     return gameInfoName
+        
 
-def ShowGameTrophyStatus(index):
+def InitGameTrophyStatus(index):
 # 선택한 게임의 트로피 현황 표시 (획득/전체)
     trophyStatus_bronze = str(ownedGameList['earnedTrophy'][index]['bronze']) + "/" + str(ownedGameList['entireTrophy'][index]['bronze'])
     trophyStatus_silver = str(ownedGameList['earnedTrophy'][index]['silver']) + "/" + str(ownedGameList['entireTrophy'][index]['silver'])
@@ -141,24 +151,67 @@ def ShowGameTrophyStatus(index):
     gameInfoTrophy = Label(gameInfoFrame, text=trophyStatus)
     gameInfoTrophy.grid(row=1, column=0)
 
-def ShowGameTrophyProgress(index):
+    return gameInfoTrophy
+
+def InitGameTrophyProgress(index):
     # 선택한 게임의 진행도 표시
     titleProgress = ownedGameList['progress'][index]
 
     gameInfoProgress = Label(gameInfoFrame, text="진행도 " + str(titleProgress) + "%")
     gameInfoProgress.grid(row=2, column=0)
 
+    return gameInfoProgress
+
+# 각 위젯들을 생성한 후 전역 변수에 대입
+currentIndex = gameNameList.curselection()[0]
+g_gameInfoImage = InitGameImage(currentIndex)
+g_gameInfoName = InitGameName(currentIndex)
+g_gameInfoTrophy = InitGameTrophyStatus(currentIndex)
+g_gameInfoProgress = InitGameTrophyProgress(currentIndex)
+
+# 게임 선택할 때 실행하는 업데이트 함수들
+def UpdateGameImage(a_gameInfoImage, index):
+    gameImageURL = request.urlopen(ownedGameList['titleIcon'][index])
+    raw_data = gameImageURL.read()
+    gameImageURL.close()
+
+    gameImage = Image.open(BytesIO(raw_data))
+    photo = ImageTk.PhotoImage(gameImage)
+
+    # 게임 이미지 업데이트
+    a_gameInfoImage.image = photo
+    a_gameInfoImage.config(image=photo)
+
+def UpdateGameName(a_gameInfoName, index):
+    gameTitleName = ownedGameList['titleName'][index]
+
+    a_gameInfoName.config(text=gameTitleName)
+
+def UpdateGameTrophyStatus(a_gameInfoTrophy, index):
+    trophyStatus_bronze = str(ownedGameList['earnedTrophy'][index]['bronze']) + "/" + str(ownedGameList['entireTrophy'][index]['bronze'])
+    trophyStatus_silver = str(ownedGameList['earnedTrophy'][index]['silver']) + "/" + str(ownedGameList['entireTrophy'][index]['silver'])
+    trophyStatus_gold = str(ownedGameList['earnedTrophy'][index]['gold']) + "/" + str(ownedGameList['entireTrophy'][index]['gold'])
+    trophyStatus_platinum = str(ownedGameList['earnedTrophy'][index]['platinum']) + "/" + str(ownedGameList['entireTrophy'][index]['platinum'])
+
+    trophyStatus = "{} {} {} {}".format(trophyStatus_bronze, trophyStatus_silver, trophyStatus_gold, trophyStatus_platinum)
+
+    a_gameInfoTrophy.config(text=trophyStatus)
+
+def UpdateGameTrophyProgress(a_gameInfoProgress, index):
+    titleProgress = ownedGameList['progress'][index]
+
+    a_gameInfoProgress.config(text="진행도 " + str(titleProgress) + "%")
+
+# 게임 정보 프레임 안에 있는 모든 위젯을 선택한 게임으로 업데이트한다.
 def UpdateGameInfos():
-    # 아무 것도 선택하지 않았을 때, 첫 번째 게임으로 인덱스 설정
-    # 튜플은 비어있을 때 False를 반환
+    # 리스트 박스의 curselection -> 튜플
+    # 튜플의 맨 첫 번째 원소를 가져옴 (현재 선택한 것)
     currentIndex = gameNameList.curselection()[0]
 
-    gameInfoFrame.update()
-
-    ShowGameImage(currentIndex)
-    ShowGameName(currentIndex).config()
-    ShowGameTrophyProgress(currentIndex)
-    ShowGameTrophyStatus(currentIndex)
+    UpdateGameImage(g_gameInfoImage, currentIndex)
+    UpdateGameName(g_gameInfoName, currentIndex)
+    UpdateGameTrophyStatus(g_gameInfoTrophy, currentIndex)
+    UpdateGameTrophyProgress(g_gameInfoProgress, currentIndex)
 
 def ShowGameSpecificInfo():
     pass
@@ -170,8 +223,6 @@ gameInfoSpecific.grid(row=3, column=0)
 # 게임 선택 버튼 --------------------
 gameSelectionBtn = Button(gameSelection, text="게임 선택", command=UpdateGameInfos) # 업데이트
 gameSelectionBtn.pack()
-
-UpdateGameInfos()
 
 root.config(menu=programMenu)
 root.mainloop()
