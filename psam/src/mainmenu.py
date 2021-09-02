@@ -31,7 +31,6 @@ lang_setting = language.lang_en
 # 프로그램 메뉴
 menu_program = Menu(programMenu, tearoff=0)
 menu_program.add_command(label=lang_setting['lang_program_quit'], command=root.quit)
-
 programMenu.add_cascade(label=lang_setting['lang_program'], menu=menu_program)
 
 # 언어 메뉴
@@ -39,10 +38,14 @@ menu_language = Menu(programMenu, tearoff=0)
 
 # 언어 변경
 def SetLanguage(currentLang):
+    # global -> 함수 밖에 있는 변수를 그대로 함수 안에서 사용할 때 사용
+    global lang_setting
+
     if(currentLang == "English"):
         lang_setting = language.lang_en
     elif(currentLang == "Korean"):
         lang_setting = language.lang_ko
+
     UpdateAllWidgets()
 
 # 언어 메뉴
@@ -53,6 +56,7 @@ menu_language.add_radiobutton(label="한국어", command=lambda: SetLanguage("Ko
 # programMenu에 menu_language 메뉴 등록
 programMenu.add_cascade(label=lang_setting['lang_language'], menu=menu_language)
 # endregion
+
 
 # region 플레이어 정보
 # 플레이어 정보 표시 프레임
@@ -90,7 +94,6 @@ def InitProfile():
     ShowProfileName()
     # 트로피 현황
     # 트로피 레벨
-
 
 InitProfile()
 # endregion
@@ -264,8 +267,15 @@ gameSelectionBtn.pack()
 # 언어 변경할 때 모든 위젯을 새로 불러옴
 def UpdateAllWidgets():
     UpdateGameInfos()
-    gameInfoSpecific.config(text=lang_setting['lang_specific'])
-    gameSelectionBtn.config(text=lang_setting['lang_gameSelect'])
+    gameInfoSpecific.config(text=lang_setting['lang_specific']) # 세부 정보 버튼
+    gameSelectionBtn.config(text=lang_setting['lang_gameSelect']) # 게임 선택 버튼
+    playerInfoFrame.config(text=lang_setting['lang_profile']) # 플레이어 정보 프레임
+    gameInfoFrame.config(text=lang_setting['lang_game']) # 게임 정보 프레임
+    # entryconfig 함수 : 메뉴 안의 옵션을 config
+    menu_program.entryconfig(1, label=lang_setting['lang_program_quit']) # 상단 메뉴 업데이트.
+    programMenu.entryconfig(1, label=lang_setting['lang_program']) # 상단 메뉴 업데이트
+    programMenu.entryconfig(2, label=lang_setting['lang_language']) # 상단 메뉴 업데이트
+
 
 root.config(menu=programMenu)
 root.mainloop()
