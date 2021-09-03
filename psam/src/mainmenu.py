@@ -16,7 +16,7 @@ root = Tk()
 # 프로그램 창에 표시되는 이름
 root.title("PS Trophy Manager")
 # 기본 창 크기 설정
-root.geometry("600x650")
+root.geometry("600x750")
 # 창 크기 조절 가능
 root.resizable(False, False)
 # endregion
@@ -75,25 +75,86 @@ def ShowProfilePicture():
 
     profilePictureLabel = Label(playerInfoFrame, image=photo)
     profilePictureLabel.image = photo
-    profilePictureLabel.pack()
+    profilePictureLabel.grid(row=0, column=1)
 
 # 프로필 이름
 def ShowProfileName():
     profileName = getUserInfos.GetUserProfileName()
 
     profileNameLabel = Label(playerInfoFrame, text=profileName)
-    profileNameLabel.pack()
+    profileNameLabel.grid(row=0, column=2)
 
 # 트로피 현황
+def ShowProfileTrophyStatus():
+    # 전체 트로피 수 표시
+    trophyTotalName = Label(playerInfoFrame, text=lang_setting['lang_profile_trophyCount'])
+    trophyTotalName.grid(row=1, column=2)
 
-# 트로피 레벨 (나중에 추가)
+    userProfileTrophyInfo = getUserInfos.GetUserProfileTrophies()
+    trophyTotalCount = Label(playerInfoFrame, text=userProfileTrophyInfo['total'])
+    trophyTotalCount.grid(row=2, column=2)
+
+    # 트로피 사진 표시
+    trophyImage_bronze = PhotoImage(file="media/bronze.png")
+    trophyImage_silver = PhotoImage(file="media/silver.png")
+    trophyImage_gold = PhotoImage(file="media/gold.png")
+    trophyImage_platinum = PhotoImage(file="media/platinum.png")
+
+    trophyImageLabel_bronze = Label(playerInfoFrame, image=trophyImage_bronze)
+    trophyImageLabel_bronze.image = trophyImage_bronze
+    trophyImageLabel_bronze.grid(row=4, column=0)
+    trophyImageLabel_silver = Label(playerInfoFrame, image=trophyImage_silver)
+    trophyImageLabel_silver.image = trophyImage_silver
+    trophyImageLabel_silver.grid(row=4, column=1)
+    trophyImageLabel_gold = Label(playerInfoFrame, image=trophyImage_gold)
+    trophyImageLabel_gold.image = trophyImage_gold
+    trophyImageLabel_gold.grid(row=4, column=2)
+    trophyImageLabel_platinum = Label(playerInfoFrame, image=trophyImage_platinum)
+    trophyImageLabel_platinum.image = trophyImage_platinum
+    trophyImageLabel_platinum.grid(row=4, column=3)
+
+    # 트로피별 수 표시
+    trophyCount_bronze = userProfileTrophyInfo['bronze']
+    trophyCount_silver = userProfileTrophyInfo['silver']
+    trophyCount_gold = userProfileTrophyInfo['gold']
+    trophyCount_platinum = userProfileTrophyInfo['platinum']
+
+    trophyCountLabel_bronze = Label(playerInfoFrame, text=trophyCount_bronze)
+    trophyCountLabel_bronze.grid(row=5, column=0)
+    trophyCountLabel_silver = Label(playerInfoFrame, text=trophyCount_silver)
+    trophyCountLabel_silver.grid(row=5, column=1)
+    trophyCountLabel_gold = Label(playerInfoFrame, text=trophyCount_gold)
+    trophyCountLabel_gold.grid(row=5, column=2)
+    trophyCountLabel_platinum = Label(playerInfoFrame, text=trophyCount_platinum)
+    trophyCountLabel_platinum.grid(row=5, column=3)
+
+    return trophyTotalName
+
+# 트로피 레벨
+def ShowProfileTrophyLevel():
+    trophyLevelName = Label(playerInfoFrame, text=lang_setting['lang_profile_trophyLevel'])
+    trophyLevelName.grid(row=1, column=1)
+
+    # 트로피 레벨 표시
+    trophyLevel = Label(playerInfoFrame, text="LV " + str(getUserInfos.GetUserProfileTrophyLevel()))
+    trophyLevel.grid(row=2, column=1)
+
+    return trophyLevelName
 
 # 프로필 초기화
 def InitProfile():
     ShowProfilePicture()
     ShowProfileName()
-    # 트로피 현황
-    # 트로피 레벨
+
+trophyTotalName = ShowProfileTrophyStatus()
+trophyLevelName = ShowProfileTrophyLevel()
+
+# 프로필 업데이트
+def UpdateTrophyStatus():
+    trophyTotalName.config(text=lang_setting['lang_profile_trophyCount'])
+
+def UpdateTrophyLevel():
+    trophyLevelName.config(text=lang_setting['lang_profile_trophyLevel'])
 
 InitProfile()
 # endregion
@@ -206,8 +267,6 @@ def UpdateGameImage(a_gameInfoImage, index):
     a_gameInfoImage.config(image=photo)
 
 # 게임 이름 업데이트
-
-
 def UpdateGameName(a_gameInfoName, index):
     gameTitleName = ownedGameList['titleName'][index]
 
@@ -275,7 +334,9 @@ def UpdateAllWidgets():
     menu_program.entryconfig(1, label=lang_setting['lang_program_quit']) # 상단 메뉴 업데이트.
     programMenu.entryconfig(1, label=lang_setting['lang_program']) # 상단 메뉴 업데이트
     programMenu.entryconfig(2, label=lang_setting['lang_language']) # 상단 메뉴 업데이트
-
+    # 트로피 관련 업데이트
+    UpdateTrophyStatus()
+    UpdateTrophyLevel()
 
 root.config(menu=programMenu)
 root.mainloop()

@@ -23,10 +23,32 @@ def GetUserProfileName():
 
     return fullName
 
-# 유저의 총 프로필 개수를 가져옴
+# 유저의 총 트로피 개수를 가져옴
 def GetUserProfileTrophies():
-    pass
+    trophySummary = userInfoInstance.GetTrophyProfileSummary()
+
+    # 유저의 전체 트로피 개수를 트로피 별로 가져온다
+    trophyCount_bronze = trophySummary['earnedTrophies']['bronze']
+    trophyCount_silver = trophySummary['earnedTrophies']['silver']
+    trophyCount_gold = trophySummary['earnedTrophies']['gold']
+    trophyCount_platinum = trophySummary['earnedTrophies']['platinum']
+
+    # 전체 트로피 개수
+    trophyCount_total = trophyCount_bronze + trophyCount_silver + trophyCount_gold + trophyCount_platinum
+
+    # 유저 트로피 정보를 딕셔너리 형태로 내보낸다
+    userTrophyCountInfo = {
+        'bronze' : trophyCount_bronze,
+        'silver' : trophyCount_silver,
+        'gold' : trophyCount_gold,
+        'platinum' : trophyCount_platinum,
+        'total' : trophyCount_total
+    }
+
+    return userTrophyCountInfo
 
 # 유저의 프로필 레벨을 가져옴 (나중에 추가)
 def GetUserProfileTrophyLevel():
-    pass
+    trophySummary = userInfoInstance.GetTrophyProfileSummary()
+    
+    return trophySummary['trophyLevel']
