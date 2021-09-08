@@ -4,7 +4,7 @@
 트로피의 trophyID를 이용해 전체 트로피 목록에서 이미 달성한 트로피들을 뽑아줘야한다.
 
 예) 용과같이6 ps4버전 트로피 달성 정보 가져오기
-GetEarnedTrophies('trophy', 'NPWR09911_00', 'all')
+GetEarnedTrophies('trophy', 'NPWR09911_00')
 
 trophySetVersion(string) : 현재 트로피 셋 버전
 hasTrophyGroups(Boolean) : 이 타이틀이 추가적인 트로피 그룹이 있으면 True

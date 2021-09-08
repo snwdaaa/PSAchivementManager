@@ -1,4 +1,4 @@
-GetAllTrophies(self, npServiceName, npCommunicationId, trophyGroupId):
+GetAllTrophies(self, npServiceName, npCommunicationId):
 
 npServiceName : ps3-ps4-ps vita와 ps5를 구분
 npCommunicationId : 게임 코드

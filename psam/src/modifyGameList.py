@@ -24,6 +24,7 @@ def GetOwnedGameList():
         'titleIcon' : [],
         'titlePlatform' : [],
         'npComId' : [],
+        'npSerName' : [],
         'entireTrophy' : [],
         'earnedTrophy' : [],
         'progress' : []
@@ -42,6 +43,9 @@ def GetOwnedGameList():
 
         npComId = entireGameList['trophyTitles'][i]['npCommunicationId'] # 개별 게임의 npCommunicationId를 가져옴
         titleInfo['npComId'].append(npComId)
+
+        npSerName = entireGameList['trophyTitles'][i]['npServiceName'] # 개별 게임의 npServiceName을 가져옴
+        titleInfo['npSerName'].append(npSerName)
 
         # entireTrophy와 earnedTrophy는 리스트 안에 딕셔너리{'bronze':숫자, 'silver':숫자, 'gold':숫자, 'platinum':숫자}가 또 있음
         entireTrophy = entireGameList['trophyTitles'][i]['definedTrophies'] # 개별 게임의 전체 트로피 수를 가져옴
