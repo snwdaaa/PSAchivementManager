@@ -318,7 +318,6 @@ class MainMenu:
         gameInfoImage = Label(self.gameInfoFrame, image=photo)
         gameInfoImage.image = photo
         gameInfoImage.pack()
-        #gameInfoImage.grid(row=0, column=0)
 
         return gameInfoImage
 
@@ -328,7 +327,6 @@ class MainMenu:
 
         gameInfoName = Label(self.gameInfoFrame, text=gameTitleName)
         gameInfoName.pack()
-        #gameInfoName.grid(row=1, column=1)
 
         return gameInfoName
 
@@ -338,7 +336,6 @@ class MainMenu:
 
         gameInfoTrophy = Label(self.gameInfoFrame, text=trophyStatus)
         gameInfoTrophy.pack()
-        #gameInfoTrophy.grid(row=1, column=0)
 
         return gameInfoTrophy
 
@@ -350,8 +347,6 @@ class MainMenu:
             self.gameInfoFrame, text=self.lang_setting['lang_progress'] + " " + str(titleProgress) + "%")
         gameInfoProgress.pack()
 
-        #gameInfoProgress.grid(row=2, column=0)
-
         return gameInfoProgress
 # endregion
 
@@ -360,7 +355,7 @@ class MainMenu:
         # 게임 정보를 표시할 프레임을 만듦
         self.CreateGameInfoFrame()
 
-        # 각 위젯들을 생성한 후 전역 변수에 대입
+        # 각 위젯들을 생성한 후 멤버 변수에 대입
         self.currentIndex = self.gameNameList.curselection()[0]
         self.g_gameInfoImage = self.InitGameImage(self.currentIndex)
         self.g_gameInfoName = self.InitGameName(self.currentIndex)
@@ -409,12 +404,11 @@ class MainMenu:
         self.UpdateGameTrophyStatus(self.g_gameInfoTrophy, self.currentIndex)
         self.UpdateGameTrophyProgress(
             self.g_gameInfoProgress, self.currentIndex)
-        self.UpdateSelectedGameInfoDict()
 # endregion
 
 # region Specific Menu 전달용 함수
     # specificMenu 스크립트에 넘겨줄 정보를 딕셔너리 형태로 정리하는 함수
-    def UpdateSelectedGameInfoDict(self):
+    def GetSelectedGameInfoDict(self):
         # 게임 이름, 사진, 트로피 현황, 진행도, 선택 언어 정보를 정리 후 넘겨준다.
         selectedGameInfo = {
             'titleName': self.GetGameName(self.currentIndex),
@@ -428,26 +422,21 @@ class MainMenu:
 
         return selectedGameInfo
 
-    # 처음 실행할 때 선택된 게임의 정보를 업데이트 하기 위해 한 번 실행
-    # UpdateSelectedGameInfoDict()
-
     # 게임 세부 정보 창을 띄우는 함수
     def ShowGameSpecificInfoWindow(self):
-        pass
+        gameInfoDict = self.GetSelectedGameInfoDict()
+        SpecificMenu.gameInfoDict = gameInfoDict  # Specific Menu로 게임 정보 전달
 
-        #gameInfoDict = UpdateSelectedGameInfoDict()
+        # root를 Toplevel로 하는 SpecificMenu를 띄움
+        self.specificMenu = SpecificMenu(self.root)
 
-        #specificWindow = Toplevel(root)
 
-        #specificWindow.title("PS Trophy Manager")
-        # specificWindow.geometry("600x750")
-
-        # specificMenu.InitTkRoot(specificWindow)
-        # specificMenu.GetGameInfoDict(gameInfoDict)
 # endregion
 
 # region 버튼
     # 선택한 게임의 상세 보기 버튼을 표시
+
+
     def CreateGameInfoSpecificButton(self):
         self.gameInfoSpecific = Button(
             self.gameInfoFrame, text=self.lang_setting['lang_specific'], command=self.ShowGameSpecificInfoWindow)
@@ -493,9 +482,68 @@ class MainMenu:
 # endregion - 메인 메뉴 클래스
 
 # region 특정 게임 트로피 상세 정보 메뉴 클래스
+
+
 class SpecificMenu:
-    def __init__(self, root):
-        self.root = root
+    # main menu에서 선택한 게임의 정보와 언어 설정을 가져올 딕셔너리
+    gameInfoDict = {}
+
+    def __init__(self, root):  # root : 창의 root, gameInfo : 선택한 게임의 상세정보 및 언어정보
+        self.root = root  # Toplevel이 될 root
+        self.specificWindow = self.CreateSpecificMenu(
+            self.root)  # Specific Menu
+
+        # 언어 설정 가져오기
+        self.lang_setting = self.gameInfoDict['selectedLanguage']
+
+        # 기본 호출 함수
+        # 1. 게임 정보
+        self.CreateAllGameInfoWidgets()
+
+    # Specific Menu를 root를 Toplevel로 가지도록 한 후, Menu를 리턴한다.
+    def CreateSpecificMenu(self, root):
+        specificWindow = Toplevel(root)
+
+        specificWindow.title("PS Trophy Manager")
+        specificWindow.geometry("600x750")
+
+        return specificWindow
+
+# region 게임 정보 프레임
+    def CreateGameInfoFrame(self):
+        self.gameInfoFrame = LabelFrame(self.specificWindow, text=self.lang_setting['lang_game'])
+        self.gameInfoFrame.pack(side='top', padx=10, pady=10)
+# endregion
+
+# region 게임 정보
+    def InitGameImage(self):
+        photo = self.gameInfoDict['titleIcon']
+
+        gameInfoImage = Label(self.gameInfoFrame, image=photo)
+        gameInfoImage.image = photo
+        gameInfoImage.grid(row=1, column=0)
+
+
+    def InitGameName(self):
+        pass
+
+    def InitGameTrophyStatus(self):
+        pass
+
+    def InitGameTrophyProgress(self):
+        pass
+# endregion
+
+# region 게임 정보 위젯 생성
+    def CreateAllGameInfoWidgets(self):
+        self.CreateGameInfoFrame() # 프레임
+        self.InitGameImage() # 게임 사진
+        self.InitGameName() # 게임 이름
+        self.InitGameTrophyStatus() # 게임 트로피 상태
+        self.InitGameTrophyProgress() # 게임 트로피 진행도
+# endregion
+
+
 # endregion
 
 
@@ -513,6 +561,5 @@ root.resizable(False, False)
 
 # Main Menu 객체
 mainMenu = MainMenu(root)
-
 
 root.mainloop()
