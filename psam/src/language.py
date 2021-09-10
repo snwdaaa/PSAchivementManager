@@ -11,6 +11,12 @@ lang_ko = {
     "lang_gameSelect" : "게임 선택",
     "lang_progress" : "진행도",
     "lang_specific" : "트로피 목록",
+    "lang_earnedDate" : "달성일",
+    "lang_earned" : "달성/미달성",
+    "lang_earnedRate" : "전체 플레이어 달성률",
+    "lang_trophyType" : "트로피 종류",
+    "lang_langSetWarn" : "경고",
+    "lang_langSetWarnDesc" : "트로피 정보를 보는 중에는 언어를 변경할 수 없습니다."
 }
 
 lang_en = {
@@ -24,4 +30,10 @@ lang_en = {
     "lang_gameSelect" : "Game Select",
     "lang_progress" : "Progress",
     "lang_specific" : "Trophy list",
+    "lang_earnedDate" : "Earned Date",
+    "lang_earned" : "Earned",
+    "lang_earnedRate" : "All player earned Rate",
+    "lang_trophyType" : "Trophy Type",
+    "lang_langSetWarn" : "Warning",
+    "lang_langSetWarnDesc" : "You can't change language setting while specific menu is opened."
 }

@@ -8,7 +8,6 @@ userInfoInstance = userInfo.UserInfo(login.onlineID, login.npssoCode).GetPlayerI
 
 # npServiceName, npCommunicationId 가져오기
 
-
 allTrophyList = userInfoInstance.GetAllTrophies('trophy', 'NPWR09911_00')
 earnedTrophyList = userInfoInstance.GetEarnedTrophies('trophy', 'NPWR09911_00')
 
@@ -52,5 +51,3 @@ def GetGameTrophyList():
         resultTrophyList['trophyEarnedRate'].append(trophyEarnedRate)
 
     return resultTrophyList
-
-print(GetGameTrophyList())
