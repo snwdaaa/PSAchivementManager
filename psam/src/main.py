@@ -433,8 +433,8 @@ class MainMenu:
             # 퍼센티지 숫자만 가져오는 것에 주의
             'titleTrophyProgress': self.GetGameTrophyProgress(self.currentIndex),
             'selectedLanguage': self.lang_setting,
-            'npComId' : self.ownedGameList['npComId'][self.currentIndex],
-            'npSerName' : self.ownedGameList['npSerName'][self.currentIndex]
+            'npComId': self.ownedGameList['npComId'][self.currentIndex],
+            'npSerName': self.ownedGameList['npSerName'][self.currentIndex]
         }
 
         return selectedGameInfo
@@ -507,13 +507,24 @@ class MainMenu:
 # endregion - 메인 메뉴 클래스
 
 # region 특정 게임 트로피 상세 정보 메뉴 클래스
+
+
 class SpecificMenu:
     # main menu에서 선택한 게임의 정보와 언어 설정을 가져올 딕셔너리
     gameInfoDict = {}
 
+    # 개별 트로피 정보를 담을 프레임들의 리스트
+    indFrameList = []
+
     def __init__(self, root):  # root : 창의 root, gameInfo : 선택한 게임의 상세정보 및 언어정보
         self.root = root  # Toplevel이 될 root
-        self.specificWindow = self.CreateSpecificMenu(self.root)  # Specific Menu
+        self.specificWindow = self.CreateSpecificMenu(
+            self.root)  # Specific Menu
+
+        # 프레임 리스트 초기화
+        self.indFrameList.clear()
+
+        self.SendNPValues()
 
         # 언어 설정 가져오기
         self.lang_setting = self.gameInfoDict['selectedLanguage']
@@ -550,8 +561,12 @@ class SpecificMenu:
         self.specificWindow.destroy()  # 창 종료
         MainMenu.SelectElementOnList(mainMenu)
 
-    # npServiceName, npCommunicationId를 modifyTrophyList.py로 전달한다.
-    # self.gameInfoDict['npComId'] , self.gameInfoDict['npSerName']
+    # modifyTrophyList에 npServiceName, npCommunicationId 값을 전달한다.
+    def SendNPValues(self):
+        npSerName = self.gameInfoDict['npSerName']
+        npComId = self.gameInfoDict['npComId']
+
+        modifyTrophyList.UpdateNPValues(npSerName, npComId)
 
 # region 게임 정보 프레임
     def CreateGameInfoFrame(self):
@@ -610,7 +625,7 @@ class SpecificMenu:
         self.sortTypeCombobox = ttk.Combobox(
             self.specificWindow, height=3, values=self.sortTypeList, state="readonly")
         self.sortTypeCombobox.current(0)  # default값 설정
-        self.sortTypeCombobox.pack(side="right", padx=10)
+        self.sortTypeCombobox.pack()
 # endregion
 
 # region 트로피 요소 처리
@@ -645,7 +660,7 @@ class SpecificMenu:
     # 트로피 인스턴스를 생성
     def CreateTrophyInstance(self):
         # 전체 트로피 갯수
-        self.trophyCount = modifyTrophyList.totalTrophyCount
+        self.trophyCount = modifyTrophyList.GetTrophyCount()
 
         # 트로피 인스턴스를 담을 리스트
         self.trophyInstances = []
@@ -663,9 +678,21 @@ class SpecificMenu:
         self.trophyInfoFrame.pack(expand=True)
 # endregion
 
+# region 전체 트로피 정보 프레임 스크롤 바
+    def CreateTrophyInfoFrameScrollBar(self):
+        self.scrollBar = Scrollbar(self.trophyInfoFrame)
+        self.scrollBar.pack(side="right", fill="y")
+# endregion
+
+# region 전체 트로피 정보 프레임 - 캔버스
+    def CreateTrophyInfoCanvas(self):
+        self.trophyInfoCanvas = Canvas(self.trophyInfoFrame, bg='white')
+        self.trophyInfoCanvas.pack()
+# endregion
+
 # region 개별 트로피 정보 프레임 (반복문에서 호출)
     def CreateIndividualTrophyInfoFrame(self):
-        indFrame = Frame(self.trophyInfoFrame, bd=1)
+        indFrame = LabelFrame(self.trophyInfoCanvas, text="")
         indFrame.pack(expand=True)
 
         return indFrame
@@ -683,72 +710,82 @@ class SpecificMenu:
 
         trophyInfoImage = Label(parentFrame, image=photo)
         trophyInfoImage.image = photo
-        trophyInfoImage.grid(row=1, column=1)
+        #trophyInfoImage.grid(row=1, column=0)
+        trophyInfoImage.pack(side='left', padx=10)
 
     # 트로피 이름 표시
     def InitTrophyName(self, parentFrame, name):
         trophyInfoName = Label(parentFrame, text=name)
-        trophyInfoName.grid(row=0, column=0)
+        #trophyInfoName.grid(row=0, column=1)
+        trophyInfoName.pack(side='left', padx=10)
 
     # 트로피 설명 표시
     def InitTrophyDetail(self, parentFrame, detail):
         trophyInfoDetail = Label(parentFrame, text=detail)
-        trophyInfoDetail.grid(row=0, column=1)
+        #trophyInfoDetail.grid(row=1, column=1)
+        trophyInfoDetail.pack(side='left', padx=10)
 
     # 전체 플레이어 달성률 표시
     def InitTrophyEarnedRate(self, parentFrame, earnedRate):
         trophyInfoEarnedRate = Label(parentFrame, text=earnedRate)
-        trophyInfoEarnedRate.grid(row=0, column=2)
+        #trophyInfoEarnedRate.grid(row=3, column=1)
+        trophyInfoEarnedRate.pack(side='left', padx=10)
+
+    # 트로피 획득 여부 표시
+    def InitTrophyIsEarned(self, parentFrame, isEarned):
+        # isEarned 여부에 따라 Label 색 결정
+        if(isEarned == True):
+            bgColor = 'blue'
+        else:
+            bgColor = 'red'
+
+        trophyInfoIsEarned = Label(parentFrame, bg=bgColor)
+        trophyInfoIsEarned.pack(side='right', padx=10)
 # endregion
 
 # region 개별 트로피 위젯 생성
     # 개별 트로피 정보를 담을 프레임들의 리스트를 리턴
     def CreateIndividualTrophyInfoFrameList(self):
-        # 개별 트로피 정보를 담을 프레임들의 리스트
-        indFrameList = []
-
         # 개별 트로피 프레임을 트로피 갯수만큼 만들어
         # 리스트에 저장한다
         for i in range(0, self.trophyCount):
-            indFrameList.append(self.CreateIndividualTrophyInfoFrame())
-
-        return indFrameList
+            self.indFrameList.append(self.CreateIndividualTrophyInfoFrame())
 
     # 개별 트로피의 사진을 프레임에 pack
     def CreateIndividualTrophyImage(self):
-        indFrameList = self.CreateIndividualTrophyInfoFrameList()
-
         # 각 프레임에 트로피 사진을 표시
         for i in range(0, self.trophyCount):
+            print(self.indFrameList[i])
             trophyImageUrl = self.trophyInstances[i].GetTrophyIconUrl()
-            self.InitTrophyImage(indFrameList[i], trophyImageUrl)
+            self.InitTrophyImage(self.indFrameList[i], trophyImageUrl)
 
     # 개별 트로피의 이름을 프레임에 pack
     def CreateIndividualTrophyName(self):
-        indFrameList = self.CreateIndividualTrophyInfoFrameList()
-
         # 각 프레임에 트로피 이름을 표시
         for i in range(0, self.trophyCount):
             trophyName = self.trophyInstances[i].GetTrophyName()
-            self.InitTrophyName(indFrameList[i], trophyName)
+            self.InitTrophyName(self.indFrameList[i], trophyName)
 
     # 개별 트로피의 설명을 프레임에 pack
     def CreateIndividualTrophyDetail(self):
-        indFrameList = self.CreateIndividualTrophyInfoFrameList()
-
         # 각 프레임에 트로피 설명을 표시
         for i in range(0, self.trophyCount):
             trophyDetail = self.trophyInstances[i].GetTrophyDetail()
-            self.InitTrophyDetail(indFrameList[i], trophyDetail)
+            self.InitTrophyDetail(self.indFrameList[i], trophyDetail)
 
     # 개별 트로피의 획득 비율을 프레임에 pack
     def CreateIndividualTrophyEarnedRate(self):
-        indFrameList = self.CreateIndividualTrophyInfoFrameList()
-
         # 각 프레임에 트로피 획득 비율을 표시
         for i in range(0, self.trophyCount):
             trophyEarnedRate = self.trophyInstances[i].GetTrophyEarnedRate()
-            self.InitTrophyDetail(indFrameList[i], trophyEarnedRate)
+            self.InitTrophyEarnedRate(self.indFrameList[i], trophyEarnedRate)
+
+    # 개별 트로피의 획득 여부를 프레임에 pack
+    def CreateIndividualTrophyIsEarned(self):
+        # 각 프레임에 트로피 획득 여부 표시
+        for i in range(0, self.trophyCount):
+            trophyIsEarned = self.trophyInstances[i].GetIsEarned()
+            self.InitTrophyIsEarned(self.indFrameList[i], trophyIsEarned)
 
     # 모든 개별 트로피 관련 위젯을 생성
     def CreateAllIndividualTrophyInfoWidget(self):
@@ -757,12 +794,17 @@ class SpecificMenu:
         self.CreateIndividualTrophyName()
         self.CreateIndividualTrophyDetail()
         self.CreateIndividualTrophyEarnedRate()
+        self.CreateIndividualTrophyIsEarned()
 # endregion
 
 # region 트로피 위젯(트로피 프레임, 개별 트로피, 스크롤 바) 생성
     def CreateAllTrophyWidgets(self):
         self.CreateTrophyInstance()
         self.CreateTrophyInfoFrame()
+        self.CreateTrophyInfoFrameScrollBar()
+        self.CreateTrophyInfoCanvas()
+        self.scrollBar.config(command=self.trophyInfoCanvas.yview) # 캔버스의 yview를 가져옴
+        self.trophyInfoCanvas.configure(yscrollcommand=self.scrollBar.set)
         self.CreateAllIndividualTrophyInfoWidget()
 # endregion
 

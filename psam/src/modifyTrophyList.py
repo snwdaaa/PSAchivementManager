@@ -6,12 +6,22 @@ import login
 # 유저 인스턴스 선언
 userInfoInstance = userInfo.UserInfo(login.onlineID, login.npssoCode).GetPlayerInstance()
 
-# npServiceName, npCommunicationId 가져오기
-
+# 용과같이 6 트로피 정보로 초기화
 allTrophyList = userInfoInstance.GetAllTrophies('trophy', 'NPWR09911_00')
 earnedTrophyList = userInfoInstance.GetEarnedTrophies('trophy', 'NPWR09911_00')
 
-totalTrophyCount = allTrophyList['totalItemCount']
+# npServiceName, npCommunicationId 가져오기
+def UpdateNPValues(npSerName, npComId):
+    global allTrophyList
+    global earnedTrophyList
+
+    allTrophyList = userInfoInstance.GetAllTrophies(npSerName, npComId)
+    earnedTrophyList = userInfoInstance.GetEarnedTrophies(npSerName, npComId)
+
+def GetTrophyCount():
+    totalTrophyCount = allTrophyList['totalItemCount']
+
+    return totalTrophyCount
 
 def GetGameTrophyList():
     # specific menu에 넘겨줄 정리된 트로피 딕셔너리
@@ -24,6 +34,8 @@ def GetGameTrophyList():
         'trophyIconUrl' : [], # 트로피 사진 URL
         'trophyEarnedRate' : [], # 전체 플레이어 획득 비율(%)
     }
+
+    totalTrophyCount = GetTrophyCount()
 
     for i in range(0, totalTrophyCount):
         # 트로피 획득 여부
