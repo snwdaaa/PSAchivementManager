@@ -675,25 +675,30 @@ class SpecificMenu:
     def CreateTrophyInfoFrame(self):
         self.trophyInfoFrame = LabelFrame(
             self.specificWindow, text=self.lang_setting['lang_specific'])
-        self.trophyInfoFrame.pack(expand=True)
+        self.trophyInfoFrame.pack(expand=True, fill='both')
 # endregion
 
 # region 전체 트로피 정보 프레임 스크롤 바
     def CreateTrophyInfoFrameScrollBar(self):
-        self.scrollBar = Scrollbar(self.trophyInfoFrame)
+        self.scrollBar = Scrollbar(self.trophyInfoFrame, orient="vertical")
         self.scrollBar.pack(side="right", fill="y")
 # endregion
 
 # region 전체 트로피 정보 프레임 - 캔버스
     def CreateTrophyInfoCanvas(self):
-        self.trophyInfoCanvas = Canvas(self.trophyInfoFrame, bg='white')
+        self.trophyInfoCanvas = Canvas(self.trophyInfoFrame, bg='white', yscrollcommand=self.scrollBar.set, scrollregion=(0, 0, 0, 10000), width=1000, height=2000)
         self.trophyInfoCanvas.pack()
+
+    # indFrameList에 담긴 모든 indFrame에 대해 모두 캔버스에 표시
+    def CreateIndFrameOnCanvas(self):
+        for i in range(0, self.trophyCount):
+            self.trophyInfoCanvas.create_window(4, 400*i, window=self.indFrameList[i], anchor="nw")
 # endregion
 
 # region 개별 트로피 정보 프레임 (반복문에서 호출)
     def CreateIndividualTrophyInfoFrame(self):
         indFrame = LabelFrame(self.trophyInfoCanvas, text="")
-        indFrame.pack(expand=True)
+        #indFrame.pack(expand=True)
 
         return indFrame
 # endregion
@@ -803,9 +808,10 @@ class SpecificMenu:
         self.CreateTrophyInfoFrame()
         self.CreateTrophyInfoFrameScrollBar()
         self.CreateTrophyInfoCanvas()
-        self.scrollBar.config(command=self.trophyInfoCanvas.yview) # 캔버스의 yview를 가져옴
-        self.trophyInfoCanvas.configure(yscrollcommand=self.scrollBar.set)
         self.CreateAllIndividualTrophyInfoWidget()
+        self.CreateIndFrameOnCanvas()
+
+        self.scrollBar.config(command=self.trophyInfoCanvas.yview) # 캔버스의 yview를 가져옴
 # endregion
 
 
